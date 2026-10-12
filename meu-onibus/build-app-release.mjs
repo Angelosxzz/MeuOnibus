@@ -1,0 +1,10 @@
+import {readFile,writeFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+const config=JSON.parse(await readFile('release-config.json','utf8'));
+const apk=await readFile('../meu-onibus-android/Meu-Onibus.apk');
+const manifest=await readFile('../meu-onibus-android/app/src/main/AndroidManifest.xml','utf8');
+if(!Number.isInteger(config.versionCode)||config.versionCode<=0||!/^\d+\.\d+\.\d+$/.test(config.versionName)||apk.length<1000||apk.length>1500000||apk.subarray(0,4).toString('hex')!=='504b0304')throw Error('APK ou versão inválida.');
+if(Number(manifest.match(/versionCode="(\d+)"/)[1])!==config.versionCode||manifest.match(/versionName="([^"]+)"/)[1]!==config.versionName)throw Error('Compile o APK da versão configurada antes de publicar.');
+const info={packageName:'br.com.meuonibus',versionCode:config.versionCode,versionName:config.versionName,apkUrl:'https://meu-onibus.miguel-angelo09.chatgpt.site/downloads/Meu-Onibus.apk',sha256:createHash('sha256').update(apk).digest('hex'),bytes:apk.length,notes:config.notes};
+await writeFile('worker/release-data.js',`export const releaseInfo=${JSON.stringify(info)};\nexport const apkBase64=${JSON.stringify(apk.toString('base64'))};\n`);
+console.log(JSON.stringify({versionCode:info.versionCode,versionName:info.versionName,bytes:info.bytes}));

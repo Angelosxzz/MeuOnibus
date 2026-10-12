@@ -1,0 +1,13 @@
+{
+  "name": "meu-onibus-api",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "test": "node check-suggestions.mjs && node check-app-release.mjs",
+    "build": "node build-api.mjs",
+    "build:release": "node build-app-release.mjs"
+  }
+}
