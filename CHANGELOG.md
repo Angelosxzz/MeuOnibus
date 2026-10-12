@@ -2,6 +2,11 @@
 
 ## Em desenvolvimento
 
+- Ida/volta mantém a referência GPS/mapa, identifica a origem da distância e espera GPS com precisão conhecida de até 100 m.
+- Previsões por ponto usam somente itinerários confirmados; caminhos de carro não são promovidos automaticamente.
+- Admin pode desenhar/importar GeoJSON por sentido, revisar e publicar; alterações de coordenadas invalidam os trechos ligados.
+- Mapa de consulta sobrepõe o percurso confirmado.
+
 - API: tratamento de falhas assíncronas, leitura limitada por bytes e revalidação ETag.
 - Mapa: CSP com nonce, integridade do Leaflet, URL restrita e preservação da seleção.
 - Apps: contrato de cache compartilhado, recuperação segura, estado da consulta e seleção acessível por teclado.

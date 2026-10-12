@@ -54,9 +54,10 @@ public final class AuditChecks extends Instrumentation {
         Activity picker=monitor.waitForActivityWithTimeout(10000);removeMonitor(monitor);require(picker!=null,"Seletor não abriu");
         WebView web=view(picker,"",WebView.class);ready(web);evaluate(web,"(window.BusMap.select(0,0),true)");waitForIdleSync();
         Button accept=view(picker,"Usar este ponto",Button.class);runOnMainSync(accept::performClick);waitForIdleSync();
-        boolean[] pointMode={false};runOnMainSync(()->pointMode[0]=contains(main.getWindow().getDecorView(),"Nenhum trajeto cadastrado a até 200 m"));require(pointMode[0],"Não entrou na consulta pelo ponto escolhido");
+        boolean[] pointMode={false};runOnMainSync(()->pointMode[0]=contains(main.getWindow().getDecorView(),"Nenhum itinerário de ônibus confirmado a até 200 m"));require(pointMode[0],"Não entrou na consulta pelo ponto escolhido");
+        Button both=view(main,"Ver ida e volta neste local",Button.class);runOnMainSync(both::performClick);waitForIdleSync();boolean[] retained={false};runOnMainSync(()->retained[0]=contains(main.getWindow().getDecorView(),"ponto escolhido no mapa (0.000000, 0.000000)"));require(retained[0],"Ida e volta substituiu o ponto escolhido pela parada");
         runOnMainSync(()->spinner.setSelection(5));waitForIdleSync();
-        runOnMainSync(()->pointMode[0]=contains(main.getWindow().getDecorView(),"Nenhum trajeto cadastrado a até 200 m"));require(!pointMode[0],"Menu mudou, mas a consulta ficou no ponto anterior");
+        runOnMainSync(()->pointMode[0]=contains(main.getWindow().getDecorView(),"Nenhum itinerário de ônibus confirmado a até 200 m"));require(!pointMode[0],"Menu mudou, mas a consulta ficou no ponto anterior");
       }finally{runOnMainSync(main::finish);}
     });
     result.putString("audit",failures==0?"PASS":"FAIL");result.putInt("failures",failures);finish(failures==0?Activity.RESULT_OK:Activity.RESULT_CANCELED,result);

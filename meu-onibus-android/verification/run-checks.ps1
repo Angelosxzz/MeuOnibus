@@ -15,3 +15,7 @@ if($LASTEXITCODE -ne 0){throw 'Falha no cálculo de previsão'}
 if($LASTEXITCODE -ne 0){throw 'Falha ao compilar política do mapa'}
 & $java -cp $buildRoot br.com.meuonibus.core.MapUrlPolicyCheck
 if($LASTEXITCODE -ne 0){throw 'Falha na política do mapa'}
+& $javac -encoding UTF-8 -d $buildRoot "$projectRoot/../shared/src/main/java/br/com/meuonibus/core/ItineraryPolicy.java" "$projectRoot/../shared/verification/ItineraryPolicyCheck.java"
+if($LASTEXITCODE -ne 0){throw 'Falha ao compilar política do itinerário'}
+& $java -cp $buildRoot br.com.meuonibus.core.ItineraryPolicyCheck
+if($LASTEXITCODE -ne 0){throw 'Falha na política do itinerário'}

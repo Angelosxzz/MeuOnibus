@@ -3,6 +3,7 @@ import {mapPage} from './map-page.js';
 import {suggestionsApi} from './suggestions.js';
 import {appReleaseApi} from './app-release.js';
 import {readBody} from './body.js';
+import {validateItineraries} from './itineraries.js';
 const headers={'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};
 const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers});
 export function validate(data){
@@ -11,7 +12,7 @@ export function validate(data){
   const extra=data.additionalStops||[];if(!Array.isArray(extra)||extra.length>100)throw Error('Máximo de 100 paradas adicionais.');const ids=new Set();
   extra.forEach(s=>{if(typeof s.id!=='string'||!s.id||s.id.length>100||ids.has(s.id)||typeof s.name!=='string'||!s.name.trim()||s.name.length>100||!Number.isFinite(s.lat)||Math.abs(s.lat)>90||!Number.isFinite(s.lon)||Math.abs(s.lon)>180||typeof s.confirmed!=='boolean'||!Array.isArray(s.routes)||s.routes.length<1||s.routes.some(r=>!routeNames.includes(r)))throw Error('Parada adicional inválida.');ids.add(s.id);});
   data.stops.forEach((s,i)=>{if(s.name!==stopNames[i]||!Number.isFinite(s.lat)||Math.abs(s.lat)>90||!Number.isFinite(s.lon)||Math.abs(s.lon)>180)throw Error('Coordenadas inválidas.');});
-  data.routes.forEach((r,i)=>{if(r.name!==routeNames[i]||typeof r.confirmed!=='boolean'||!Array.isArray(r.trips)||r.trips.length>1000)throw Error('Linha inválida.');
+  data.routes.forEach((r,i)=>{if(r.name!==routeNames[i]||typeof r.confirmed!=='boolean'||!Array.isArray(r.trips)||r.trips.length>1000)throw Error('Linha inválida.');validateItineraries(data,r);
     if(data.schemaVersion===2){
       if(!Array.isArray(r.events)||r.events.length>2000||typeof r.partial!=='boolean'||typeof r.source!=='string'||r.source.length>150||typeof r.note!=='string'||r.note.length>1000)throw Error('Metadados da linha inválidos.');
       for(const value of [r.intervalMinutes,r.averageTravelMinutes])if(!Number.isInteger(value)||value<0||value>1440)throw Error('Média de tempo inválida.');

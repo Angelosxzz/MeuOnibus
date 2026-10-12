@@ -9,13 +9,16 @@ public final class RoadForecast {
   public static final class Segment {
     public final int from,to; public final String destination,label;
     public final double travelMinutes; public final boolean paired;
-    public final double[][] path;public final double[] edgeSeconds;
+    public final double[][] path;public final double[] edgeSeconds;public final boolean itineraryConfirmed;
     public Segment(int from,int to,String destination,String label,double minutes,boolean paired,double[][] path){
       this(from,to,destination,label,minutes,paired,path,null);
     }
     public Segment(int from,int to,String destination,String label,double minutes,boolean paired,double[][] path,double[] edgeSeconds){
+      this(from,to,destination,label,minutes,paired,path,edgeSeconds,false);
+    }
+    public Segment(int from,int to,String destination,String label,double minutes,boolean paired,double[][] path,double[] edgeSeconds,boolean itineraryConfirmed){
       this.from=from;this.to=to;this.destination=destination;this.label=label;
-      this.travelMinutes=minutes;this.paired=paired;this.path=path;this.edgeSeconds=edgeSeconds;
+      this.travelMinutes=minutes;this.paired=paired;this.path=path;this.edgeSeconds=edgeSeconds;this.itineraryConfirmed=itineraryConfirmed;
     }
   }
   public static final class Snap {
@@ -31,6 +34,11 @@ public final class RoadForecast {
     public final Segment segment;public final Snap snap;
     public final List<Passage> future=new ArrayList<>();public Passage last;
     Direction(Segment segment,Snap snap){this.segment=segment;this.snap=snap;}
+  }
+  public static Direction nearestConfirmed(Schedule.Route route,double lat,double lon){
+    Direction nearest=null;
+    for(Segment segment:route.roadSegments){if(!segment.itineraryConfirmed)continue;Snap point=snap(lat,lon,segment.path,segment.edgeSeconds);if(point!=null&&(nearest==null||point.distanceMetres<nearest.snap.distanceMetres))nearest=new Direction(segment,point);}
+    return nearest;
   }
   public static Snap snap(double lat,double lon,double[][] path){
     return snap(lat,lon,path,null);
@@ -57,7 +65,7 @@ public final class RoadForecast {
   }
   public static List<Direction> predict(Schedule.Route route,double lat,double lon,double now){
     List<Direction> all=new ArrayList<>();double nearest=Double.POSITIVE_INFINITY;
-    for(Segment segment:route.roadSegments){Snap snap=snap(lat,lon,segment.path,segment.edgeSeconds);if(snap==null)continue;nearest=Math.min(nearest,snap.distanceMetres);all.add(new Direction(segment,snap));}
+    for(Segment segment:route.roadSegments){if(!segment.itineraryConfirmed)continue;Snap snap=snap(lat,lon,segment.path,segment.edgeSeconds);if(snap==null)continue;nearest=Math.min(nearest,snap.distanceMetres);all.add(new Direction(segment,snap));}
     List<Direction> result=new ArrayList<>();if(nearest>200)return result;
     for(Direction direction:all){
       // Include nearby parallel carriageways instead of assigning the passenger a travel direction.

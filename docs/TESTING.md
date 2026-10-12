@@ -51,3 +51,8 @@ adb shell am instrument -w br.com.meuonibus.audit.test/br.com.meuonibus.AuditChe
 A saída deve conter `audit=PASS` e zero falhas; código de saída do adb sozinho não prova sucesso. O mapa ainda exige internet e consulta a página pública atual, usando coordenadas públicas de teste. Não testa a publicação do novo HTML em produção. A chave do servidor de teste é `test-only`. Ao terminar, pare o servidor, remova o reverse 8187 e, se desejado, desinstale apenas os pacotes `.audit` e `.audit.test`. Não desinstale os apps originais.
 
 MapUrlPolicyCheck também integra a verificação Java: permite o mapa oficial e rejeita host impostor, HTTP, userinfo, porta externa, caminho diferente/encodado e esquemas não HTTPS. A remoção da guarda de userinfo em uma cópia temporária produziu a falha esperada. Compilações finais: Gradle/lint e PowerShell dos dois apps aprovadas; lint com 38/29 avisos e zero erros. Os APKs de fixture apontam à API local e não devem ser compartilhados.
+
+A correção de itinerários adicionou ItineraryPolicyCheck (incluindo qualidade do GPS) e check-itineraries.mjs. RoadForecastCheck rejeita o falso caminho a ~13 m, e AuditChecks inclui ida/volta mantendo o ponto escolhido. A mensagem esperada na instrumentação foi atualizada para a nova regra de itinerário confirmado, sem mudar os critérios de saída do modo por ponto. Ver docs/ITINERARIES.md para resultados e limites.
+
+
+Em 12/10/2026, após reconectar o S21 FE, a instrumentação final da correção de itinerários passou: seis verificações, audit=PASS, failures=0. A versão 0.6.0 foi instalada sobre a anterior sem apagar dados. GPS real e edição nativa de itinerários do admin continuam pendentes.

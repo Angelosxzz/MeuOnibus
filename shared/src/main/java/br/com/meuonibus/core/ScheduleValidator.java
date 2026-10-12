@@ -41,6 +41,7 @@ public final class ScheduleValidator {
       JSONObject route=routes.getJSONObject(i);if(!ROUTES[i].equals(route.getString("name")))throw new JSONException("Linha inválida.");
       bool(route,"confirmed");bool(route,"partial");text(route,"source",150,false);text(route,"note",1000,false);integer(route,"intervalMinutes",1440);integer(route,"averageTravelMinutes",1440);
       if(route.has("origin")&&!route.isNull("origin"))point(route.getJSONObject("origin"),true);
+      JSONArray segments=route.optJSONArray("roadSegments");if(segments!=null){if(segments.length()>20)throw new JSONException("Máximo de 20 trechos por linha.");for(int j=0;j<segments.length();j++){JSONObject segment=segments.getJSONObject(j);if(segment.optBoolean("itineraryConfirmed",false))ItineraryData.validate(data,route,segment);}}
       JSONArray events=route.getJSONArray("events");if(events.length()>2000)throw new JSONException("Tabela muito grande.");
       for(int j=0;j<events.length();j++){JSONObject event=events.getJSONObject(j);integer(event,"stop",3+extra.length());integer(event,"minute",1439);text(event,"destination",100,true);text(event,"vehicle",100,false);String kind=event.getString("kind");if(!kind.equals("tabela")&&!kind.equals("estimado"))throw new JSONException("Tipo de horário inválido.");}
     }

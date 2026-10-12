@@ -1,4 +1,5 @@
 import {readBody} from './body.js';
+import {invalidateConnected} from './itineraries.js';
 const clean=value=>typeof value==='string'?value.trim():'';
 const number=value=>typeof value==='number'&&Number.isFinite(value);
 function target(data,id){if(id.startsWith('origin:'))return data.routes.find(r=>'origin:'+r.name===id)?.origin;if(id.startsWith('stop:'))return data.stops.find(s=>'stop:'+s.name===id);if(id.startsWith('extra:'))return (data.additionalStops||[]).find(s=>'extra:'+s.id===id);return null;}
@@ -15,7 +16,7 @@ export function validateSuggestion(body,data){
 export function applySuggestion(data,proposal,id){
   const result=structuredClone(data);
   if(proposal.operation==='add'){result.additionalStops||=[];result.additionalStops.push({id:'s-'+id,name:proposal.name,lat:proposal.lat,lon:proposal.lon,confirmed:true,routes:[proposal.route]});}
-  else{const point=target(result,proposal.target);if(!point)throw Error('A parada não existe mais.');if(proposal.name){if(proposal.target.startsWith('extra:'))point.name=proposal.name;else point.displayName=proposal.name;}if(proposal.lat!==null){point.lat=proposal.lat;point.lon=proposal.lon;point.confirmed=true;}}
+  else{const point=target(result,proposal.target);if(!point)throw Error('A parada não existe mais.');if(proposal.name){if(proposal.target.startsWith('extra:'))point.name=proposal.name;else point.displayName=proposal.name;}if(proposal.lat!==null){if(point.lat!==proposal.lat||point.lon!==proposal.lon)invalidateConnected(result,proposal.target);point.lat=proposal.lat;point.lon=proposal.lon;point.confirmed=true;}}
   return result;
 }
 export async function suggestionsApi(request,env,seed,validate,authorize,json){

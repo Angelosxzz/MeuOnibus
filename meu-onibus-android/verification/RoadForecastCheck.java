@@ -4,8 +4,18 @@ public final class RoadForecastCheck {
   static void check(boolean value,String message){if(!value)throw new AssertionError(message);}
   static void close(double value,double expected,String message){check(Math.abs(value-expected)<0.00001,message+": "+value);}
   static Schedule.Event event(int stop,int minute,String destination,String vehicle){return new Schedule.Event(stop,minute,destination,vehicle,"estimado");}
-  static RoadForecast.Segment segment(int from,int to,String destination,int minutes,boolean paired,double[][] path){return new RoadForecast.Segment(from,to,destination,destination,minutes,paired,path);}
+  // Existing fixtures represent known bus itineraries, explicitly confirmed under the new contract.
+  static RoadForecast.Segment segment(int from,int to,String destination,int minutes,boolean paired,double[][] path){return new RoadForecast.Segment(from,to,destination,destination,minutes,paired,path,null,true);}
   public static void main(String[] args){
+    // A car shortcut 13 m away is not a bus itinerary; the real bus road is over 400 m away.
+    Schedule.Route shortcut=new Schedule.Route("Tabatinga","",false);
+    shortcut.events.add(event(0,376,"Rodoviária","A"));
+    shortcut.roadSegments.add(new RoadForecast.Segment(0,1,"Rodoviária","Caminho de carro",21,false,new double[][]{{.000117,-.01},{.000117,.01}}));
+    check(RoadForecast.predict(shortcut,0,0,376).isEmpty(),"Never snap a passenger to an unconfirmed car itinerary 13 m away");
+    shortcut.roadSegments.add(segment(0,1,"Rodoviária",21,false,new double[][]{{.004,-.01},{.004,.01}}));
+    check(RoadForecast.predict(shortcut,0,0,376).isEmpty(),"A confirmed bus road over 400 m away must not be reported as 13 m away");
+    RoadForecast.Direction correct=RoadForecast.nearestConfirmed(shortcut,0,0);
+    close(correct.snap.distanceMetres,444.779706578235,"Show the real distance to the confirmed bus road, excluding the 13 m car shortcut");
     // Bug caught: projecting onto the endpoints instead of the nearest point on the road.
     RoadForecast.Snap snap=RoadForecast.snap(.005,.011,new double[][]{{0,0},{0,.01},{.01,.01}});
     close(snap.lat,.005,"Projection latitude");close(snap.lon,.01,"Projection longitude");close(snap.fraction,.75,"Progress uses road length, not straight-line distance");
