@@ -11,3 +11,7 @@ New-Item -ItemType Directory -Force -Path $buildRoot | Out-Null
 if($LASTEXITCODE -ne 0){throw 'Falha ao compilar verificações'}
 & $java -cp $buildRoot br.com.meuonibus.RoadForecastCheck
 if($LASTEXITCODE -ne 0){throw 'Falha no cálculo de previsão'}
+& $javac -encoding UTF-8 -d $buildRoot "$projectRoot/../shared/src/main/java/br/com/meuonibus/core/MapUrlPolicy.java" "$projectRoot/../shared/verification/MapUrlPolicyCheck.java"
+if($LASTEXITCODE -ne 0){throw 'Falha ao compilar política do mapa'}
+& $java -cp $buildRoot br.com.meuonibus.core.MapUrlPolicyCheck
+if($LASTEXITCODE -ne 0){throw 'Falha na política do mapa'}

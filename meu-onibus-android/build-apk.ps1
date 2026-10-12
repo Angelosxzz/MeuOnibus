@@ -10,7 +10,7 @@ $compiledManifest.OuterXml | Set-Content -LiteralPath "$buildRoot\AndroidManifes
 function Invoke-Checked([string]$Program,[string[]]$Arguments){ & $Program @Arguments; if($LASTEXITCODE -ne 0){ throw "Falha na compilação: $Program (código $LASTEXITCODE)" } }
 Invoke-Checked "$BuildTools\aapt2.exe" @('compile','--dir',"$projectRoot\app\src\main\res",'-o',"$buildRoot\resources.zip")
 Invoke-Checked "$BuildTools\aapt2.exe" @('link','-o',"$buildRoot\resources.apk",'--manifest',"$buildRoot\AndroidManifest.xml",'-I',"$Platform\android.jar",'--java',"$buildRoot\gen",'-A',"$projectRoot\app\src\main\assets",'--min-sdk-version','26','--target-sdk-version','36',"$buildRoot\resources.zip")
-$sources=@(Get-ChildItem -LiteralPath "$projectRoot\app\src\main\java","$buildRoot\gen" -Filter '*.java' -Recurse | ForEach-Object FullName)
+$sources=@(Get-ChildItem -LiteralPath "$projectRoot\app\src\main\java","$projectRoot\..\shared\src\main\java","$buildRoot\gen" -Filter '*.java' -Recurse | ForEach-Object FullName)
 Invoke-Checked "$Jdk\bin\javac.exe" (@('-encoding','UTF-8','-source','17','-target','17','-classpath',"$Platform\android.jar",'-d',"$buildRoot\classes")+$sources)
 Invoke-Checked "$Jdk\bin\jar.exe" @('cf',"$buildRoot\classes.jar",'-C',"$buildRoot\classes",'.')
 Invoke-Checked "$Jdk\bin\java.exe" @('-cp',"$BuildTools\lib\d8.jar",'com.android.tools.r8.D8','--lib',"$Platform\android.jar",'--min-api','26','--output',"$buildRoot\dex", "$buildRoot\classes.jar")

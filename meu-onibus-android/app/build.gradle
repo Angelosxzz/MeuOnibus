@@ -1,6 +1,8 @@
 plugins { id 'com.android.application' }
 android { namespace 'br.com.meuonibus'; compileSdk 36; buildToolsVersion "36.0.0"
- defaultConfig { applicationId 'br.com.meuonibus'; minSdk 26; targetSdk 36; versionCode 6; versionName '0.5.0' }
+ defaultConfig { applicationId 'br.com.meuonibus'; minSdk 26; targetSdk 36; versionCode 6; versionName '0.5.0'; testInstrumentationRunner 'br.com.meuonibus.AuditChecks' }
+ buildTypes { debug { applicationIdSuffix '.audit' } }
+ sourceSets { main.java.srcDir '../../shared/src/main/java' }
  compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
 }
 
