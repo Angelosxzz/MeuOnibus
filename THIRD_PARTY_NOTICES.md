@@ -6,3 +6,5 @@
 - Android SDK e JDK são ferramentas externas; seguem seus respectivos termos e não são redistribuídos aqui.
 
 Preserve a atribuição visível do OpenStreetMap no mapa. Não há licença aberta concedida ao código próprio deste repositório; sua divulgação ou redistribuição deve ser autorizada pelo proprietário.
+
+Gradle Wrapper 8.11.1: Apache License 2.0. O texto da licença está em docs/licenses/Gradle-LICENSE.txt. Os scripts preservam seus avisos de copyright e o JAR foi conferido pelo checksum oficial.
