@@ -6,7 +6,7 @@
     "node": ">=24"
   },
   "scripts": {
-    "test": "node check-suggestions.mjs && node check-app-release.mjs",
+    "test": "node check-suggestions.mjs && node check-app-release.mjs && node check-audit.mjs",
     "build": "node build-api.mjs",
     "build:release": "node build-app-release.mjs"
   }

@@ -22,3 +22,9 @@ Não há dependências npm de execução. Rode os testes com `npm test` dentro d
 Os apps e a política de atualização ainda apontam para o servidor atual. Ao migrar o domínio, revise CloudDatabase, MapPickerActivity, UpdatePolicy, build-app-release e testes dos dois apps. Nunca permita qualquer host arbitrário no instalador.
 
 O script de build da cópia GitHub não copia identificação privada do provedor de hospedagem. A configuração da publicação deve ser fornecida no ambiente, separadamente.
+
+## Código compartilhado e ambiente de auditoria
+
+`shared/src/main/java` contém o contrato dos dados e a política de URL do mapa usados nos dois apps. Os builds Gradle e PowerShell incluem essa pasta. Debug usa sufixo `.audit`, nome QA e autoridade de FileProvider separada; o APK distribuído permanece com o identificador original. HTTP sem TLS está permitido somente no perfil debug para a fixture local.
+
+Use `node scripts/prepare-audit-fixture.mjs <pasta-fora-do-repositorio>` para criar uma cópia de testes apontando para a API local. Escolha uma pasta nova: o script copia os arquivos de teste. Nunca use essa cópia para distribuir APKs. O código normal permanece no endpoint HTTPS.

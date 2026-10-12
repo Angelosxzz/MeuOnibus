@@ -2,6 +2,12 @@
 
 ## Em desenvolvimento
 
+- API: tratamento de falhas assíncronas, leitura limitada por bytes e revalidação ETag.
+- Mapa: CSP com nonce, integridade do Leaflet, URL restrita e preservação da seleção.
+- Apps: contrato de cache compartilhado, recuperação segura, estado da consulta e seleção acessível por teclado.
+- Contraste dos textos secundários e explicação do funcionamento offline/privacidade.
+- Testes locais da auditoria, instrumentação isolada e documentação de reprodução.
+
 - Tema com recurso da barra de navegação limitado ao Android 8.1+, mantendo o mínimo Android 8.0.
 - Constantes explícitas para orientação do seletor de mapa.
 - Gradle Wrapper, documentação e verificação automatizada do repositório.
