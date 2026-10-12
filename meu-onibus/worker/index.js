@@ -2,6 +2,7 @@ import seed from './seed.js';
 import {mapPage} from './map-page.js';
 import {suggestionsApi} from './suggestions.js';
 import {appReleaseApi} from './app-release.js';
+import {readBody} from './body.js';
 const headers={'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};
 const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers});
 export function validate(data){
@@ -26,15 +27,24 @@ export default {async fetch(request,env){
   try{
     const releaseResponse=appReleaseApi(request);if(releaseResponse)return releaseResponse;
     if(path==='/api/health')return json({service:'Meu Ônibus',status:'ok'});
-    if(path.startsWith('/api/suggestions'))return suggestionsApi(request,env,seed,validate,equalSecret,json);
-    if(path==='/map-picker'&&request.method==='GET')return new Response(mapPage(),{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'strict-origin-when-cross-origin','X-Content-Type-Options':'nosniff'}});
+    if(path.startsWith('/api/suggestions'))return await suggestionsApi(request,env,seed,validate,equalSecret,json);
+    if(path==='/map-picker'&&request.method==='GET'){
+      const nonce=crypto.randomUUID();
+      return new Response(mapPage(nonce),{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'strict-origin-when-cross-origin','X-Content-Type-Options':'nosniff','Content-Security-Policy':`default-src 'none'; script-src 'nonce-${nonce}' https://unpkg.com; style-src 'unsafe-inline' https://unpkg.com; img-src data: https://tile.openstreetmap.org https://unpkg.com; connect-src https://tile.openstreetmap.org; frame-src 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'none'; form-action 'none'`}});
+    }
     if(path!=='/api/schedule')return json({service:'API do aplicativo Android Meu Ônibus',endpoint:'/api/schedule'},404);
     if(!env.DB)return json({error:'Banco de dados indisponível.'},503);
-    if(request.method==='GET'){const row=await env.DB.prepare('SELECT payload, revision, updated_at FROM schedules WHERE id=1').first();return json(row?{data:JSON.parse(row.payload),revision:row.revision,updatedAt:row.updated_at}:{data:seed,revision:0,updatedAt:null});}
+    if(request.method==='GET'){
+      const row=await env.DB.prepare('SELECT payload, revision, updated_at FROM schedules WHERE id=1').first();
+      const etag='"schedule-'+(row?.revision||0)+'"',responseHeaders={...headers,ETag:etag};
+      const condition=request.headers.get('If-None-Match');
+      if(condition&&(condition.trim()==='*'||condition.split(',').some(value=>value.trim().replace(/^W\//,'')===etag)))return new Response(null,{status:304,headers:responseHeaders});
+      return new Response(JSON.stringify(row?{data:JSON.parse(row.payload),revision:row.revision,updatedAt:row.updated_at}:{data:seed,revision:0,updatedAt:null}),{headers:responseHeaders});
+    }
     if(request.method!=='PUT')return json({error:'Método não permitido.'},405);
     if(!await equalSecret(request.headers.get('Authorization')?.replace(/^Bearer /,''),env.ADMIN_KEY))return json({error:'Chave de administrador inválida.'},401);
     if(Number(request.headers.get('Content-Length')||0)>200000)return json({error:'Tabela muito grande.'},413);
-    const raw=await request.text();if(raw.length>200000)return json({error:'Tabela muito grande.'},413);
+    const raw=await readBody(request,200000);if(raw===null)return json({error:'Tabela muito grande.'},413);
     let body;try{body=JSON.parse(raw);validate(body.data);}catch(e){return json({error:e.message||'Dados inválidos.'},400);}
     if(!Number.isInteger(body.revision)||body.revision<0)return json({error:'Versão dos dados inválida.'},400);
     const updatedAt=new Date().toISOString();

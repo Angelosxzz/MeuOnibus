@@ -1,3 +1,4 @@
+import {readBody} from './body.js';
 const clean=value=>typeof value==='string'?value.trim():'';
 const number=value=>typeof value==='number'&&Number.isFinite(value);
 function target(data,id){if(id.startsWith('origin:'))return data.routes.find(r=>'origin:'+r.name===id)?.origin;if(id.startsWith('stop:'))return data.stops.find(s=>'stop:'+s.name===id);if(id.startsWith('extra:'))return (data.additionalStops||[]).find(s=>'extra:'+s.id===id);return null;}
@@ -24,13 +25,13 @@ export async function suggestionsApi(request,env,seed,validate,authorize,json){
   if(path==='/api/suggestions/settings'&&request.method==='GET')return json({accepting});
   if(path==='/api/suggestions/settings'&&request.method==='PUT'){
     if(!await authorize(request.headers.get('Authorization')?.replace(/^Bearer /,''),env.ADMIN_KEY))return json({error:'Chave de administrador inválida.'},401);
-    const raw=await request.text();if(raw.length>200)return json({error:'Configuração inválida.'},400);let body;try{body=JSON.parse(raw);}catch{return json({error:'Configuração inválida.'},400);}if(typeof body.accepting!=='boolean')return json({error:'Informe se deseja receber sugestões.'},400);
+    const raw=await readBody(request,200);if(raw===null)return json({error:'Configuração inválida.'},400);let body;try{body=JSON.parse(raw);}catch{return json({error:'Configuração inválida.'},400);}if(typeof body.accepting!=='boolean')return json({error:'Informe se deseja receber sugestões.'},400);
     await env.DB.prepare('INSERT INTO suggestion_settings(id,enabled,updated_at) VALUES(1,?,?) ON CONFLICT(id) DO UPDATE SET enabled=excluded.enabled,updated_at=excluded.updated_at').bind(body.accepting?1:0,new Date().toISOString()).run();return json({accepting:body.accepting});
   }
   const row=await env.DB.prepare('SELECT payload,revision FROM schedules WHERE id=1').first();const data=row?JSON.parse(row.payload):seed;
   if(path==='/api/suggestions'&&request.method==='POST'){
     if(!accepting)return json({error:'O administrador pausou o recebimento de sugestões. Tente novamente mais tarde.'},403);
-    const raw=await request.text();if(raw.length>6000)return json({error:'Sugestão muito grande.'},413);
+    const raw=await readBody(request,6000);if(raw===null)return json({error:'Sugestão muito grande.'},413);
     let body,proposal;try{body=JSON.parse(raw);proposal=validateSuggestion(body,data);}catch(e){return json({error:e.message||'Sugestão inválida.'},400);}
     const ip=request.headers.get('CF-Connecting-IP')||'unknown';const hash=new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode((env.ADMIN_KEY||'')+'|'+ip)));const clientHash=Array.from(hash,b=>b.toString(16).padStart(2,'0')).join('');
     const id=crypto.randomUUID(),now=new Date().toISOString(),since=new Date(Date.now()-3600000).toISOString();
@@ -41,7 +42,7 @@ export async function suggestionsApi(request,env,seed,validate,authorize,json){
   if(path==='/api/suggestions'&&request.method==='GET'){const result=await env.DB.prepare("SELECT id,payload,status,created_at,reviewed_at FROM suggestions WHERE status='pending' ORDER BY created_at ASC LIMIT 100").all();return json({accepting,suggestions:result.results.map(r=>({id:r.id,...JSON.parse(r.payload),status:r.status,createdAt:r.created_at}))});}
   const match=path.match(/^\/api\/suggestions\/([a-f0-9-]{36})\/review$/);
   if(!match||request.method!=='POST')return json({error:'Operação não encontrada.'},404);
-  const raw=await request.text();if(raw.length>300)return json({error:'Dados inválidos.'},400);let decision;try{decision=JSON.parse(raw).decision;}catch{return json({error:'Dados inválidos.'},400);}if(!['approve','reject'].includes(decision))return json({error:'Escolha aprovar ou rejeitar.'},400);
+  const raw=await readBody(request,300);if(raw===null)return json({error:'Dados inválidos.'},400);let decision;try{decision=JSON.parse(raw).decision;}catch{return json({error:'Dados inválidos.'},400);}if(!['approve','reject'].includes(decision))return json({error:'Escolha aprovar ou rejeitar.'},400);
   const suggestion=await env.DB.prepare("SELECT payload,status FROM suggestions WHERE id=?").bind(match[1]).first();if(!suggestion)return json({error:'Sugestão não encontrada.'},404);if(suggestion.status!=='pending')return json({error:'Sugestão já analisada.'},409);
   const now=new Date().toISOString();if(decision==='reject'){const rejected=await env.DB.prepare("UPDATE suggestions SET status='rejected',reviewed_at=? WHERE id=? AND status='pending' RETURNING id").bind(now,match[1]).first();return rejected?json({status:'rejected'}):json({error:'Sugestão já analisada.'},409);}
   if(!row)return json({error:'Publique a tabela inicial antes de aprovar sugestões.'},409);
