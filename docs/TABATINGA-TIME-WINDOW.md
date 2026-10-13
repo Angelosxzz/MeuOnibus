@@ -8,4 +8,4 @@ A consulta por parada e por ponto mantém a viagem enquanto a janela ainda não 
 
 Verificações: intervalos nas duas origens, limites inclusivos, manutenção da viagem após o horário central, remoção depois da margem tardia, propagação no meio do percurso, filtro da consulta por parada, limites do dia e regressão de Umarizeiras. A suíte completa passou, assim como a compilação manual e as assinaturas APK v2/v3. O APK candidato 0.6.1 tem o mesmo certificado da 0.6.0. O ADB não mostrou aparelho conectado; não houve verificação visual ou instalação deste candidato em um Android.
 
-Esta mudança foi preparada localmente. A release pública permanece 0.6.0 até aprovação da publicação. Nenhum dado do banco em produção foi alterado.
+Após aprovação explícita do usuário, a [release 0.6.1](https://github.com/Angelosxzz/MeuOnibus-Downloads/releases/tag/v0.6.1) foi publicada em 13/10/2026. O manifesto público anuncia versionCode 8; download do GitHub e download interno foram comparados byte a byte com o APK assinado. Navegadores continuam redirecionados à release mais recente. Nenhum dado do banco em produção foi alterado.
