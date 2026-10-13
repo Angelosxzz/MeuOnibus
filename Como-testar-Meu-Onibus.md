@@ -1,8 +1,8 @@
-# Meu Ônibus 0.5.0 — teste para passageiros
+# Meu Ônibus — teste para passageiros
 
 ## Como receber novas versões
 
-Instale 0.5.0 uma vez pelo [link público do APK](https://meu-onibus.miguel-angelo09.chatgpt.site/downloads/Meu-Onibus.apk). Depois, quando houver uma atualização, abrir o app com internet mostrará **Nova versão do Meu Ônibus**.
+Instale uma vez pelo [link público do APK](https://meu-onibus.miguel-angelo09.chatgpt.site/downloads/Meu-Onibus.apk). Depois, quando houver uma atualização, abrir o app com internet mostrará **Nova versão do Meu Ônibus**.
 
 Toque em **Baixar e atualizar**. Caso o Android peça autorização, use **Abrir configuração**, autorize instalações pelo Meu Ônibus e volte ao app. Confirme a atualização no instalador do Android. **Agora não** deixa para depois. Quem estiver com a versão atual não recebe aviso.
 
