@@ -1,5 +1,5 @@
 {
-  "versionCode": 7,
-  "versionName": "0.6.0",
-  "notes": "Corrige referência do GPS/ida e volta, confirma itinerários e ajusta Pau Serrado → Shopping via CAPS, Drogasil, João Bezerra e Pague Menos."
+  "versionCode": 8,
+  "versionName": "0.6.1",
+  "notes": "Tabatinga mostra uma faixa de passagem: saídas observadas até 4 min antes da tabela e espera informada até 4 min, ou 2 min na Rodoviária. A faixa não é garantida. Chegue antes do início; a saída real do ônibus não é confirmada. Umarizeiras mantém os cálculos anteriores."
 }

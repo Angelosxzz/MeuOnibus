@@ -1,5 +1,13 @@
 # Histórico
 
+## 0.6.1 — 13/10/2026
+
+- Tabatinga mostra faixa estimada a partir da referência da tabela: 4 minutos antes e 4 depois, ou 2 depois quando a origem é a Rodoviária.
+- Viagens permanecem na consulta durante a margem posterior; saída real não é afirmada como confirmada.
+- A interface explica que a margem é observada, não garantida, e orienta chegar antes do início.
+- Umarizeiras mantém os cálculos anteriores.
+
+
 ## Em desenvolvimento
 
 - Ida/volta mantém a referência GPS/mapa, identifica a origem da distância e espera GPS com precisão conhecida de até 100 m.

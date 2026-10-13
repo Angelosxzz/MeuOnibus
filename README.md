@@ -2,7 +2,7 @@
 
 Aplicativo Android para consultar previsões de passagem em Maranguape, com horários compartilhados na nuvem.
 
-**Passageiros:** versão 0.6.0 · **Android mínimo:** 8.0 (API 26).
+**Passageiros:** versão 0.6.1 · **Android mínimo:** 8.0 (API 26).
 
 As previsões são calculadas a partir das tabelas e do percurso. Não há rastreamento por GPS dos ônibus. Tabatinga inclui simulações a cada 8 minutos; Amanari ainda não tem tabela confirmada.
 
