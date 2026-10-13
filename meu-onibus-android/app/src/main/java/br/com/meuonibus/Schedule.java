@@ -43,6 +43,9 @@ public final class Schedule {
   public static int waitMinutes(int arrival,double now){return (int)Math.ceil(arrival-now);}
   public static double distance(double lat1,double lon1,double lat2,double lon2){double a=Math.pow(Math.sin(Math.toRadians(lat2-lat1)/2),2)+Math.cos(Math.toRadians(lat1))*Math.cos(Math.toRadians(lat2))*Math.pow(Math.sin(Math.toRadians(lon2-lon1)/2),2);return 6371*2*Math.atan2(Math.sqrt(a),Math.sqrt(Math.max(0,1-a)));}
   public static int nearest(double lat,double lon){int index=0;double best=Double.POSITIVE_INFINITY;for(int i=0;i<COORDS.length;i++){double d=distance(lat,lon,COORDS[i][0],COORDS[i][1]);if(d<best){best=d;index=i;}}return index;}
-  public static List<Event> futureEvents(Route route,int stop,double now,String destination){List<Event> result=new ArrayList<>();for(Event e:route.events)if(e.stop==stop&&e.minute>=now&&(destination.isEmpty()||e.destination.equals(destination)))result.add(e);result.sort((a,b)->Integer.compare(a.minute,b.minute));return result;}
+  // Observed Tabatinga variation, not a guaranteed operating tolerance.
+  public static double earliestMinute(Route route,double reference){return route.name.equals("Tabatinga")?Math.max(0,reference-4):reference;}
+  public static double latestMinute(Route route,int departureStop,double reference){return route.name.equals("Tabatinga")?Math.min(1439,reference+(departureStop==1?2:4)):reference;}
+  public static List<Event> futureEvents(Route route,int stop,double now,String destination){List<Event> result=new ArrayList<>();for(Event e:route.events)if(e.stop==stop&&latestMinute(route,e.stop,e.minute)>=now&&(destination.isEmpty()||e.destination.equals(destination)))result.add(e);result.sort((a,b)->Integer.compare(a.minute,b.minute));return result;}
   public static String stopName(Route route,int stop){return stop==0?BOARD_NAMES[java.util.Arrays.asList(ROUTE_NAMES).indexOf(route.name)]:BOARD_NAMES[stop+2];}
 }

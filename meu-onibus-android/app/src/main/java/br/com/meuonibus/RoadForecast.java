@@ -26,8 +26,8 @@ public final class RoadForecast {
     Snap(double lat,double lon,double distance,double fraction){this.lat=lat;this.lon=lon;this.distanceMetres=distance;this.fraction=fraction;}
   }
   public static final class Passage {
-    public final Schedule.Event departure; public final double minute;
-    Passage(Schedule.Event departure,double minute){this.departure=departure;this.minute=minute;}
+    public final Schedule.Event departure; public final double minute,earliestMinute,latestMinute;
+    Passage(Schedule.Event departure,double minute,double earliest,double latest){this.departure=departure;this.minute=minute;this.earliestMinute=earliest;this.latestMinute=latest;}
     public boolean departed(double now){return departure.minute<=now;}
   }
   public static final class Direction {
@@ -81,8 +81,8 @@ public final class RoadForecast {
         }
         double arrival=event.minute+duration*direction.snap.fraction;
         if(arrival>=1440)continue;
-        Passage passage=new Passage(event,arrival);
-        if(arrival>=now)direction.future.add(passage);else if(direction.last==null||arrival>direction.last.minute)direction.last=passage;
+        Passage passage=new Passage(event,arrival,Schedule.earliestMinute(route,arrival),Schedule.latestMinute(route,event.stop,arrival));
+        if(passage.latestMinute>=now)direction.future.add(passage);else if(direction.last==null||arrival>direction.last.minute)direction.last=passage;
       }
       direction.future.sort(Comparator.comparingDouble(p->p.minute));result.add(direction);
     }
