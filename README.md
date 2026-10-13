@@ -1,8 +1,8 @@
 # Meu Ônibus
 
-Apps Android para consultar previsões de passagem em Maranguape e administrar os horários em um banco compartilhado na nuvem.
+Aplicativo Android para consultar previsões de passagem em Maranguape, com horários compartilhados na nuvem.
 
-**Passageiros:** versão 0.5.0 · **Administrador:** versão 0.3.0 · **Android mínimo:** 8.0 (API 26).
+**Passageiros:** versão 0.6.0 · **Android mínimo:** 8.0 (API 26).
 
 As previsões são calculadas a partir das tabelas e do percurso. Não há rastreamento por GPS dos ônibus. Tabatinga inclui simulações a cada 8 minutos; Amanari ainda não tem tabela confirmada.
 
@@ -11,19 +11,18 @@ As previsões são calculadas a partir das tabelas e do percurso. Não há rastr
 | Pasta | Responsabilidade |
 | --- | --- |
 | [meu-onibus-android](meu-onibus-android) | App dos passageiros, GPS, mapa, ida/volta e atualizações |
-| [meu-onibus-admin](meu-onibus-admin) | App separado para horários, paradas e revisão de sugestões |
 | [meu-onibus](meu-onibus) | API Worker, migrações SQLite/D1 e distribuição do APK |
 | [docs](docs) | Arquitetura, instalação, testes e operação |
 
 ## Instalar e testar
 
-Os APKs desta cópia privada estão em [passageiros](meu-onibus-android/Meu-Onibus.apk) e [administrador](meu-onibus-admin/Meu-Onibus-Admin.apk). Instale o app administrador somente no aparelho de quem gerencia os dados. O Android pode solicitar autorização para instalar aplicativos desta fonte; não desative o Play Protect.
+O APK dos passageiros está em [Meu Ônibus](meu-onibus-android/Meu-Onibus.apk). O código e o APK do administrador são mantidos separadamente, fora deste repositório. O Android pode solicitar autorização para instalar aplicativos desta fonte; não desative o Play Protect.
 
 Veja [instalação e uso](Como-testar-Meu-Onibus.md), [desenvolvimento](docs/DEVELOPMENT.md) e [testes](docs/TESTING.md).
 
 ## Começar a desenvolver
 
-Requisitos: JDK 17, Node.js 24+, Android SDK com plataforma 36 e Build Tools compatíveis. Os dois projetos podem ser abertos separadamente no Android Studio. O caminho de compilação já verificado é o script PowerShell de cada app.
+Requisitos: JDK 17, Node.js 24+, Android SDK com plataforma 36 e Build Tools compatíveis. O projeto meu-onibus-android pode ser aberto no Android Studio. O caminho de compilação já verificado é o script PowerShell de cada app.
 
 ```powershell
 ./scripts/check.ps1 -Jdk 'C:/caminho/jdk-17'

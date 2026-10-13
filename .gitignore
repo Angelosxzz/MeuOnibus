@@ -22,3 +22,6 @@
 .vscode/
 Thumbs.db
 .DS_Store
+
+# Admin mantido separadamente, nunca publicar
+/meu-onibus-admin/

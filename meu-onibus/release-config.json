@@ -1,1 +1,5 @@
-{"versionCode":6,"versionName":"0.5.0","notes":"Aviso automático quando houver uma versão nova, download do APK pelo app e instalação confirmada pelo Android. Mantém as previsões por GPS, mapa e os dois sentidos da pista."}
+{
+  "versionCode": 7,
+  "versionName": "0.6.0",
+  "notes": "Corrige referência do GPS/ida e volta, confirma itinerários e ajusta Pau Serrado → Shopping via CAPS, Drogasil, João Bezerra e Pague Menos."
+}

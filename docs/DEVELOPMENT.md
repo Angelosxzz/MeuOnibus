@@ -10,7 +10,6 @@ Abra cada pasta Android separadamente no Android Studio. Cada projeto inclui Gra
 
 ```powershell
 ./meu-onibus-android/build-apk.ps1 -Jdk 'C:/jdk-17' -Platform 'C:/Android/Sdk/platforms/android-36' -BuildTools 'C:/Android/Sdk/build-tools/36.0.0' -Keystore 'C:/chaves/meu-onibus-development.keystore'
-./meu-onibus-admin/build-apk.ps1 -Jdk 'C:/jdk-17' -Platform 'C:/Android/Sdk/platforms/android-36' -BuildTools 'C:/Android/Sdk/build-tools/36.0.0' -Keystore 'C:/chaves/meu-onibus-development.keystore'
 ```
 
 Os scripts atuais usam o alias e senha padrão de desenvolvimento Android e criam uma chave caso o caminho não exista. Não use esse procedimento para criar uma nova identidade de assinatura de produção. A chave das instalações atuais deve ficar protegida fora do repositório; uma chave diferente impede atualizar o app existente.
