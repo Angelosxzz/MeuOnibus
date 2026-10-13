@@ -1,5 +1,5 @@
 {
-  "versionCode": 8,
-  "versionName": "0.6.1",
-  "notes": "Tabatinga mostra uma faixa de passagem: saídas observadas até 4 min antes da tabela e espera informada até 4 min, ou 2 min na Rodoviária. A faixa não é garantida. Chegue antes do início; a saída real do ônibus não é confirmada. Umarizeiras mantém os cálculos anteriores."
+  "versionCode": 9,
+  "versionName": "0.6.2",
+  "notes": "Tabatinga destaca um horário estimado e os minutos restantes. A faixa fica como informação secundária; quando o horário central passa, o app informa há quantos minutos estava previsto. Umarizeiras mantém os cálculos anteriores."
 }

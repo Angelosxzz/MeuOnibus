@@ -1,5 +1,11 @@
 # Histórico
 
+## 0.6.2 — 13/10/2026
+
+- Tabatinga destaca um horário estimado e minutos restantes; a faixa aparece em texto secundário.
+- Quando o horário central passa, a interface informa o tempo transcorrido e a possibilidade de atraso.
+
+
 ## 0.6.1 — 13/10/2026
 
 - Tabatinga mostra faixa estimada a partir da referência da tabela: 4 minutos antes e 4 depois, ou 2 depois quando a origem é a Rodoviária.
