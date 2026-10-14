@@ -1,6 +1,8 @@
 # Meu Ônibus
 
-Aplicativo Android para consultar previsões de passagem em Maranguape, com horários compartilhados na nuvem.
+Aplicativo Android e versão web para consultar previsões de passagem em Maranguape, com horários compartilhados na nuvem.
+
+**Web para iPhone e Android:** [abrir Meu Ônibus](https://meu-onibus.pages.dev/web/). No Safari, use Compartilhar → Adicionar à Tela de Início. A sincronização da nova hospedagem ainda está em correção; a página informa quando utiliza a tabela salva.
 
 **Passageiros:** versão 0.6.2 · **Android mínimo:** 8.0 (API 26).
 
@@ -12,6 +14,7 @@ As previsões são calculadas a partir das tabelas e do percurso. Não há rastr
 | --- | --- |
 | [meu-onibus-android](meu-onibus-android) | App dos passageiros, GPS, mapa, ida/volta e atualizações |
 | [meu-onibus](meu-onibus) | API Worker, migrações SQLite/D1 e distribuição do APK |
+| [meu-onibus/web](meu-onibus/web) | Interface web, mapa, sugestões e instalação na tela inicial |
 | [docs](docs) | Arquitetura, instalação, testes e operação |
 
 ## Instalar e testar
@@ -34,6 +37,7 @@ Esse comando executa previsões, política de atualização e API com banco SQLi
 
 - [Arquitetura e fluxo de dados](docs/ARCHITECTURE.md)
 - [API e autenticação](docs/API.md)
+- [Versão web e limites dos testes](docs/WEB.md) · [Publicação na Cloudflare](docs/CLOUDFLARE.md)
 - [Publicar uma versão e recuperar falhas](docs/RELEASING.md)
 - [Privacidade e segurança](SECURITY.md)
 - [Contribuir](CONTRIBUTING.md) · [Histórico](CHANGELOG.md) · [Próximos passos](docs/ROADMAP.md)

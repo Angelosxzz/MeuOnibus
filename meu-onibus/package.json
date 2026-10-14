@@ -8,6 +8,7 @@
   "scripts": {
     "test": "node check-suggestions.mjs && node check-app-release.mjs && node check-audit.mjs && node check-itineraries.mjs && node build-api.mjs && node check-web.mjs",
     "build": "node build-api.mjs",
-    "build:release": "node build-app-release.mjs"
+    "build:release": "node build-app-release.mjs",
+    "build:cloudflare": "node build-cloudflare-web.mjs"
   }
 }
