@@ -8,7 +8,11 @@ export default {async fetch(request,env){
   const headers=new Headers();
   for(const name of ['content-type','if-none-match'])if(request.headers.has(name))headers.set(name,request.headers.get(name));
   try{
-   const result=await fetch(upstream+url.pathname,{method:request.method,headers,body:request.method==='POST'?request.body:undefined,redirect:'error',signal:AbortSignal.timeout(10000)});
+   const result=await fetch(upstream+url.pathname,{method:request.method,headers,body:request.method==='POST'?request.body:undefined,redirect:'manual',signal:AbortSignal.timeout(10000)});
+   if(result.status>=300&&result.status<400&&result.status!==304){
+    await result.body?.cancel();
+    return Response.json({error:'O serviço de horários respondeu com um redirecionamento inesperado.'},{status:502});
+   }
    const safe=new Headers({'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});
    for(const name of ['content-type','etag','retry-after'])if(result.headers.has(name))safe.set(name,result.headers.get(name));
    return new Response(result.body,{status:result.status,headers:safe});

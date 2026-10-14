@@ -29,7 +29,7 @@ Pages converte `/web/index.html` em `/web/`; o gateway não deve redirecionar `/
 
 ## Pendência comprovada
 
-A página publicada abre, mas a consulta `/api/schedule` pelo gateway Cloudflare retornou **503**, enquanto a API original respondeu **200**. A web mostra a tabela salva e avisa sobre sincronização. A causa da conexão entre hospedagens ainda precisa de diagnóstico; não considerar sincronização ou envio de sugestões em produção como verificados até essa correção. Não migrar o banco para contornar essa falha sem backup e plano de compatibilidade.
+A página publicada abre, mas a consulta `/api/schedule` pelo gateway Cloudflare retornou **503**, enquanto a API original respondeu **200**. A web mostra a tabela salva e avisa sobre sincronização. Causa reproduzida no runtime workerd/Miniflare: o fetch rejeita redirect="error". A correção usa redirect="manual" e rejeita explicitamente redirecionamentos, preservando 304. O teste no runtime passou a responder 200 com a tabela atual. O pacote corrigido ainda precisa ser publicado e verificado em produção; envio de sugestões em produção não foi testado. Não migrar o banco para contornar essa falha sem backup e plano de compatibilidade.
 
 ## Reverter
 
