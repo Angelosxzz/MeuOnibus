@@ -26,6 +26,7 @@ async function equalSecret(a,b){if(!a||!b)return false;const hash=async value=>n
 export default {async fetch(request,env){
   const path=new URL(request.url).pathname;
   try{
+    if((path==='/web'||path==='/web/')&&(request.method==='GET'||request.method==='HEAD'))return new Response(null,{status:302,headers:{Location:'/web/index.html','Cache-Control':'no-store'}});
     const releaseResponse=appReleaseApi(request);if(releaseResponse)return releaseResponse;
     if(path==='/api/health')return json({service:'Meu Ônibus',status:'ok'});
     if(path.startsWith('/api/suggestions'))return await suggestionsApi(request,env,seed,validate,equalSecret,json);
